@@ -1,0 +1,6 @@
+fastapi[standard]==0.135.2
+python-dotenv==1.2.2
+withoutbg==1.0.2
+
+# Testing dependencies
+requests==2.33.1
