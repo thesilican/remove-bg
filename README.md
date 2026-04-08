@@ -1,6 +1,7 @@
 # remove-bg
 
-An image background removal api using [withoutbg](https://github.com/withoutbg/withoutbg).
+An image background removal api using [withoutbg](https://github.com/withoutbg/withoutbg),
+hostable on Cloudflare Containers.
 Model weights from [hugging face](https://huggingface.co/withoutbg/focus/tree/main).
 
 ## Development
@@ -23,10 +24,10 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# Run using python (fastapi)
+# Run using python (using fastapi)
 uvicorn src.main:app --port 8080
 
-# Run in docker container (cloudflare wrangler)
+# Run in docker container (using cloudflare wrangler)
 pnpm install
 pnpm dev
 
@@ -45,9 +46,6 @@ python test/test.py
 ## Deployment
 
 Ensure that you have a Cloudflare account with [Cloudflare Containers](https://developers.cloudflare.com/containers/) set up.
-
-# Follow docker container log output
-docker container logs -f container_id # You can find container_id using docker ps
 
 ```sh
 pnpm run deploy
