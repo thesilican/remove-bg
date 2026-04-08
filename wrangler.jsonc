@@ -1,0 +1,39 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ *
+ * After editing this file, run `pnpm types` to regenerate the worker-configuration.d.ts file.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "remove-bg",
+  "main": "index.ts",
+  "compatibility_date": "2025-10-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+  },
+  "containers": [
+    {
+      "class_name": "RemoveBgContainer",
+      "image": "./Dockerfile",
+      "instance_type": "standard-2",
+      "max_instances": 3,
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "RemoveBgContainer",
+        "name": "REMOVE_BG_CONTAINER",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["RemoveBgContainer"],
+      "tag": "v1",
+    },
+  ],
+  "upload_source_maps": true,
+}

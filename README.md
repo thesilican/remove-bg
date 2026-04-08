@@ -1,44 +1,54 @@
 # remove-bg
 
-An image background removal api using [withoutbg](https://github.com/withoutbg/withoutbg)
-([model weights](https://huggingface.co/withoutbg/focus/tree/main)).
+An image background removal api using [withoutbg](https://github.com/withoutbg/withoutbg).
+Model weights from [hugging face](https://huggingface.co/withoutbg/focus/tree/main).
 
 ## Development
 
-Ensure git lfs hooks are installed:
+You must have the following installed:
+- git lfs
+- python (recommended v1.13)
+- node & pnpm
+- docker
 
 ```sh
+# Ensure git lfs is installed
 git lfs install
-```
 
-Create a `.env` file with the following:
-```
-ETHGLOBAL_API_KEY=api_key_here
-```
+# Create a .env file (make sure to edit this after creating!)
+cp .env.template .env
 
-Then run one of the following:
-
-```sh
-# Using docker compose
-docker compose up --build
-
-# Using docker
-docker build . -t remove-bg
-docker container run -it -p 8080:8080 -e ETHGLOBAL_API_KEY=api_key_here remove-bg
-
-# Using fastapi
+# Install python dependencies (using virtual env)
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-fastapi run src/main.py --port 8080
+
+# Run using python (fastapi)
+uvicorn src.main:app --port 8080
+
+# Run in docker container (cloudflare wrangler)
+pnpm install
+pnpm dev
+
+# Regenerate worker-configuration.d.ts (necessary if you edit wrangler.jsonc)
+pnpm types
 ```
 
 ## Testing
 
-Ensure that the server is running on port 8080.
+```sh
+# Ensure that the server is running on port 8080 (local python or docker)
+# Make sure to install requirements using pip (see above)
+python test/test.py
+```
 
-Follow the instructions to setup venv & install dependencies, then run:
+## Deployment
+
+Ensure that you have a Cloudflare account with [Cloudflare Containers](https://developers.cloudflare.com/containers/) set up.
+
+# Follow docker container log output
+docker container logs -f container_id # You can find container_id using docker ps
 
 ```sh
-python test/test.py
+pnpm run deploy
 ```

@@ -1,7 +1,14 @@
+.venv/
+.wrangler/
+node_modules/
+test/
+**/__pycache__/
 .DS_Store
 .git*
 .env*
 README.md
-.venv/
-test/
-**/__pycache__/
+*.ts
+package.json
+pnpm-lock.yaml
+tsconfig.json
+wrangler.jsonc

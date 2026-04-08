@@ -19,12 +19,12 @@ model = OpenSourceModel(
 
 app = FastAPI()
 
-executor = ThreadPoolExecutor(max_workers=5)
+executor = ThreadPoolExecutor(max_workers=1)
 
 
-@app.get("/api")
-async def get_ping():
-    return "Welcome to ETHGlobal image background removal api :)"
+@app.get("/")
+async def get_home():
+    return "🌠 Welcome to ETHGlobal image background removal api 🌠"
 
 
 @app.post("/api/image")

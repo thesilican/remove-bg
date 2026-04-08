@@ -1,0 +1,27 @@
+{
+  "name": "remove-bg",
+  "description": "A python service to remove backgrounds from images",
+  "cloudflare": {
+    "label": "Remove Background",
+    "products": [
+      "Workers",
+      "Durable Objects",
+      "Containers"
+    ]
+  },
+  "dependencies": {
+    "@cloudflare/containers": "0.0.30",
+    "hono": "4.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "typescript": "5.9.3",
+    "wrangler": "4.81.0"
+  },
+  "private": true,
+  "scripts": {
+    "types": "wrangler types",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --port 8080"
+  }
+}

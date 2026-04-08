@@ -1,28 +1,30 @@
 from concurrent.futures import ThreadPoolExecutor
+from io import BytesIO
+from PIL import Image
 import requests
 import asyncio
 from dotenv import load_dotenv
 from os import environ
 from pathlib import Path
+from imagehash import average_hash
 
 load_dotenv()
 ETHGLOBAL_API_KEY = environ.get("ETHGLOBAL_API_KEY")
-API_URL = "http://localhost:8080/api/image"
+# API_URL = "http://localhost:8080/api/image"
+API_URL = "https://remove-bg.bryanchen74.workers.dev/api/image"
 
-type Fixtures = dict[str, tuple[bytes, list[bytes]]]
+type Fixtures = dict[str, tuple[bytes, bytes]]
 
 
 def load_test_fixtures() -> Fixtures:
     print("Loading test fixtures")
     fix = {}
-    for file in Path("test/fixtures/input").glob("*"):
-        print(f"  Loading {file.name}")
-        input = open(file, "rb").read()
-        output = [
-            open(f, "rb").read()
-            for f in Path("test/fixtures/output").glob(f"{file.stem}-*")
-        ]
-        fix[file.name] = (input, output)
+    for infile in Path("test/fixtures/input").iterdir():
+        outfile = Path("test/fixtures/output") / infile.with_suffix(".png").name
+        print(f"  Loading {infile.name}")
+        input = open(infile, "rb").read()
+        output = open(outfile, "rb").read()
+        fix[infile.name] = (input, output)
     return fix
 
 
@@ -41,21 +43,20 @@ def test_auth():
 def test_image_output(fix: Fixtures):
     print("Running image output test")
     for name in fix:
-        input, outputs = fix[name]
+        input, output = fix[name]
         print(f"  Testing fixture {name}")
         headers = {
             "Authorization": f"Bearer {ETHGLOBAL_API_KEY}",
-            "Content-Type": "image/png",
+            "Content-Type": "image/jpeg" if name.endswith(".jpg") else "image/png",
         }
         response = requests.post(API_URL, headers=headers, data=input)
         assert response.status_code == 200
-        # Differences in cpu architecture can cause the model to output slightly
-        # different image files (e.g. running in docker vs local machine).
-        # As long as the output image looks reasonable it is acceptable.
-        # If this assertion is failing, please create a new output image fixture:
-        with open(f"out.png", "wb") as f:
-            f.write(response.content)
-        assert any(response.content == img for img in outputs)
+        # There should be no perceptual difference between the expected and actual images
+        # The exact file contents may differ due to differences in model execution in
+        # different cpu architectures/environments.
+        expected = average_hash(Image.open(BytesIO(output)), hash_size=128)
+        actual = average_hash(Image.open(BytesIO(response.content)), hash_size=128)
+        assert expected - actual == 0
 
 
 async def test_stress(fix: Fixtures):
