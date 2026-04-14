@@ -10,8 +10,7 @@ from imagehash import average_hash
 
 load_dotenv()
 ETHGLOBAL_API_KEY = environ.get("ETHGLOBAL_API_KEY")
-# API_URL = "http://localhost:8080/api/image"
-API_URL = "https://remove-bg.bryanchen74.workers.dev/api/image"
+API_URL = "http://localhost:8080/api/image"
 
 type Fixtures = dict[str, tuple[bytes, bytes]]
 
